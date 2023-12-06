@@ -6,127 +6,150 @@ namespace Otus8_collections
 {
     internal class Program
     {
+        private const int CollectionElementCounter = 1000000;
+        private const int DivisibleCriteriaValue = 777;
+        private const int TargetElement = 496753;
         static void Main(string[] args)
         {
             Stopwatch myWatch = new Stopwatch();
-//            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("<--------- LIST PERFORMANCE ---------->");
-//            Console.ForegroundColor = ConsoleColor.White;
-            CheckListAddInstructionPerformance(ref myWatch);
+            CheckListAddInstructionPerformance(myWatch);
             Console.WriteLine("\n");
-//            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("<--------- ARRAYLIST PERFORMANCE ---------->");
-//            Console.ForegroundColor = ConsoleColor.White;
-            CheckArrayListAddInstructionPerformance(ref myWatch);
+            CheckArrayListAddInstructionPerformance( myWatch);
             Console.WriteLine("\n");
-//            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("<--------- LINKEDLIST PERFORMANCE---------->");
-//            Console.ForegroundColor = ConsoleColor.White;
-            CheckLinkedListAddInstructionPerformance(ref myWatch);
+            CheckLinkedListAddInstructionPerformance( myWatch);
         }
 
         public static void DisplayElapsedTime(string message, TimeSpan ts)
         {
-            // Format and display the TimeSpan value.
-            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
-            Console.WriteLine(message + ": " + elapsedTime);
+            Console.WriteLine(message + ": " + ts.ToString() + "ms");
         }
-        public static void CheckListAddInstructionPerformance(ref Stopwatch myLocWatch)
+
+        private static void CheckListAddInstructionPerformance(Stopwatch myLocWatch)
         {
             var myList = new List<int>();
             var rand = new Random();
 
             int i = 0;
             myLocWatch.Restart();
-            while (i < 1000000)
+            while (i < CollectionElementCounter)
             {
                 myList.Add(rand.Next());
                 i++;
             }
             DisplayElapsedTime("1. List performance after 1 000 000 Add random instruction", myLocWatch.Elapsed);
-
+            myLocWatch.Stop();
             myLocWatch.Restart();
-            Console.WriteLine($"2. Index of value 496753 = " + myList.IndexOf(496753));
-            DisplayElapsedTime("3. Linear search instruction in List collection need ", myLocWatch.Elapsed);
+            //Console.WriteLine($"2. Index of value 496753 = " + myList.IndexOf(496753));
+            Console.WriteLine($"2. Index of value 496753 = " + myList[TargetElement].ToString());
 
+            DisplayElapsedTime("3. Linear search instruction in List collection need ", myLocWatch.Elapsed);
+            myLocWatch.Stop();
+                
             i = 0;
             myLocWatch.Restart();
-            while (i < 1000000)
+            while (i < CollectionElementCounter)
             {
-                if (myList[i]%777 == 0 && myList[i] != 0)
+                if (myList[i]%DivisibleCriteriaValue == 0 && myList[i] != 0)
                     Console.Write(myList[i] + " ");
                 i++;
             }
             Console.Write("\n");
             DisplayElapsedTime("4. Finding List elements mod 777 == 0  need", myLocWatch.Elapsed);
+            myLocWatch.Stop();
         }
 
-        public static void CheckArrayListAddInstructionPerformance(ref Stopwatch myLocWatch)
+        private static void CheckArrayListAddInstructionPerformance(Stopwatch myLocWatch)
         {
             var myArrayList = new ArrayList();
             var rand = new Random();
             
             int i = 0;
             myLocWatch.Restart();
-            while (i < 1000000)
+            while (i < CollectionElementCounter)
             {
                 myArrayList.Add(rand.Next());
                 i++;
             }
             DisplayElapsedTime("1. ArrayList performance after 1 000 000 Add instruction", myLocWatch.Elapsed);
+            myLocWatch.Stop();
 
             myLocWatch.Restart();
-            Console.WriteLine($"2. Index of value 496753 = " + myArrayList.IndexOf(496753));
+            Console.WriteLine($"2. Index of value 496753 = " + myArrayList[TargetElement].ToString());
             DisplayElapsedTime("3. Linear search instruction in ArrayList collection need", myLocWatch.Elapsed);
-
+            myLocWatch.Stop();
+            
             i = 0;
             myLocWatch.Restart();
-            while (i < 1000000)
+            while (i < CollectionElementCounter)
             {
-                if (Convert.ToInt32(myArrayList[i]) % 777 == 0 && Convert.ToInt32(myArrayList[i]) != 0)
+                if ((int)myArrayList[i] % DivisibleCriteriaValue == 0 && (int)myArrayList[i] != 0)
                     Console.Write(myArrayList[i] + " ");
                 i++;
             }
             Console.Write("\n");
             DisplayElapsedTime("4. Finding ArrayList elements mod 777 == 0  need", myLocWatch.Elapsed);
+            myLocWatch.Stop();
         }
 
-        public static void CheckLinkedListAddInstructionPerformance(ref Stopwatch myLocWatch)
+        private static void CheckLinkedListAddInstructionPerformance(Stopwatch myLocWatch)
         {
             var myLinkedList = new LinkedList<int>();
             var rand = new Random();
 
             int i = 0;
             myLocWatch.Restart();
-            while (i < 1000000)
+            while (i < CollectionElementCounter)
             {
                 myLinkedList.AddLast(rand.Next());
                 i++;
             }
             DisplayElapsedTime("1. LinkedList performance after 1 000 000 Add instruction", myLocWatch.Elapsed);
-
+            myLocWatch.Stop();
+            
             myLocWatch.Restart();
-            LinkedListNode<int> searchNode = myLinkedList.Find(496753);
-            if (searchNode!=null)
-                Console.WriteLine($"2. Index of value 496753 = " + searchNode.Value);
-            else
-                Console.WriteLine("2. Index of value 496753 not found");
+
+            /*          //indexing in while loop
+            LinkedListNode<int> currentNode = myLinkedList.First;
+            var iterator = 0;
+            while (currentNode!=null)
+            {
+                currentNode = currentNode.Next;
+                if (iterator++ == TargetElement)
+                {
+                    Console.WriteLine($"2. Index of value 496753 = " + currentNode.Value.ToString());
+                    break;
+                }
+            }*/
+
+            var iterator = 0;
+            foreach (var nodeVal in myLinkedList)
+            {
+                if (iterator == TargetElement)
+                {
+                    Console.WriteLine($"2. Index of value 496753 = " + nodeVal.ToString());
+                    break;
+                }
+                iterator++;
+            }
             DisplayElapsedTime("3. Linear search instruction in LinkedList collection need", myLocWatch.Elapsed);
+            myLocWatch.Stop();
 
             LinkedListNode<int> cycleNode = myLinkedList.First;
             i = 0;
             myLocWatch.Restart();
-            //while (i < myLinkedList.Count && cycleNode.Next != null)
             while (i < myLinkedList.Count)
             {
-                if (cycleNode.Value % 777 == 0 && cycleNode.Value != 0)
+                if (cycleNode.Value % DivisibleCriteriaValue == 0 && cycleNode.Value != 0)
                     Console.Write(cycleNode.Value + " ");
                 cycleNode = cycleNode.Next;
                 i++;
             }
             Console.Write("\n");
             DisplayElapsedTime("4. Finding LinkedList elements mod 777 == 0  need", myLocWatch.Elapsed);
+            myLocWatch.Stop();
         }
-
     }
 }
